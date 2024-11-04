@@ -1,0 +1,57 @@
+name: Coval Run Evaluation 
+
+on:
+  workflow_call:
+    inputs:
+      organization_id:
+        required: true
+        type: string
+      dataset_id:
+        required: true
+        type: string
+      created_by:
+        required: false
+        type: string
+      config:
+        required: true
+        type: string
+    secrets:
+      COVAL_API_KEY:
+        required: true
+
+jobs:
+  run-evaluation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: coval-ai/coval-github-actions
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Evaluation
+        env:
+          COVAL_API_KEY: ${{ secrets.COVAL_API_KEY }}
+          ORGANIZATION_ID: ${{ inputs.organization_id }}
+          DATASET_ID: ${{ inputs.dataset_id }}
+          CREATED_BY: ${{ inputs.created_by || 'Github Action' }}
+          CONFIG: ${{ inputs.config || '{}' }}
+        run: |
+          echo "Starting evaluation..."
+          python run_eval.py 2>&1
+          
+      - name: Handle Failure
+        if: failure()
+        run: |
+          echo "Evaluation failed. Check the logs for details."
+          exit 1
