@@ -6,9 +6,9 @@ import time
 
 class RunEval:
     def __init__(self):
-        self.api_key = os.getenv("COVAL_API_KEY")
+        self.api_key = os.getenv("LILAC_DEBUG_API_KEY")
         if not self.api_key:
-            raise ValueError("COVAL_API_KEY environment variable is required")
+            raise ValueError("LILAC_DEBUG_API_KEY environment variable is required")
             
         self.organization_id = os.getenv("ORGANIZATION_ID")
         if not self.organization_id:
