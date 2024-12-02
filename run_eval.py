@@ -2,6 +2,7 @@ import os
 import json
 import requests
 import time
+import os
 
 
 class RunEval:
@@ -85,6 +86,10 @@ class RunEval:
             "dataset_id": self.dataset_id,
             "created_by": self.created_by
         })
+        print("COVAL_API_KEY:", os.getenv("COVAL_API_KEY"))
+        print("ORGANIZATION_ID:", os.getenv("ORGANIZATION_ID"))
+        print("DATASET_ID:", os.getenv("DATASET_ID"))
+        print("CONFIG:", os.getenv("CONFIG"))
         
         api_url = 'https://api.coval.dev/eval'
 
@@ -102,7 +107,7 @@ class RunEval:
             self._wait_for_run_to_complete(run_id)
 
         except requests.exceptions.RequestException as e:
-            print(f"Request Exception: {str(e)}")
+            print(f"Request Exception: {str(e)}, {os.getenv("COVAL_API_KEY")}")
             if hasattr(e, 'response'):
                 print(f"Error Response Status Code: {e.response.status_code}")
                 print(f"Error Response Headers: {json.dumps(dict(e.response.headers), indent=2)}")
