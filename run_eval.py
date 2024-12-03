@@ -18,6 +18,10 @@ class RunEval:
         if not self.dataset_id:
             raise ValueError("DATASET_ID environment variable is required")
 
+        self.test_set_name = os.getenv("TEST_SET_NAME")
+        if not self.test_set_name:
+            raise ValueError("TEST_SET_NAME environment variable is required")
+
         try:
             self.config = json.loads(os.getenv("CONFIG"))
         except json.JSONDecodeError as e:
@@ -80,11 +84,11 @@ class RunEval:
             "x-api-key": self.api_key
         }
      
-        self.config.update({
-            "organization_id": self.organization_id,
-            "dataset_id": self.dataset_id,
-            "created_by": self.created_by
-        })
+        self.config.setdefault("organization_id", self.organization_id)
+        self.config.setdefault("dataset_id", self.dataset_id)
+        self.config.setdefault("created_by", self.created_by)
+        self.config.setdefault("test_set_name", self.test_set_name)
+        self.config.setdefault("created_by", self.created_by)
         
         api_url = 'https://api.coval.dev/eval'
 
@@ -92,8 +96,7 @@ class RunEval:
             response = requests.post(api_url, json=self.config, headers=headers)
             response.raise_for_status()
             result = response.json()
-            body = json.loads(result['body'])
-            run_id = body.get('run_id')
+            run_id = result['run_id']
 
             if not run_id:
                 raise ValueError("Failed to get run_id from API response")
