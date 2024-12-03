@@ -1,4 +1,4 @@
-name: Coval Run Evaluation 
+name: Coval Run Evaluation
 
 on:
   workflow_call:
@@ -11,6 +11,9 @@ on:
         type: string
       created_by:
         required: false
+        type: string
+      test_set_name:
+        required: true
         type: string
       config:
         required: true
@@ -32,7 +35,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
@@ -44,12 +47,13 @@ jobs:
           COVAL_API_KEY: ${{ secrets.COVAL_API_KEY }}
           ORGANIZATION_ID: ${{ inputs.organization_id }}
           DATASET_ID: ${{ inputs.dataset_id }}
+          TEST_SET_NAME: ${{ inputs.test_set_name }}
           CREATED_BY: ${{ inputs.created_by || 'Github Action' }}
           CONFIG: ${{ inputs.config || '{}' }}
         run: |
           echo "Starting evaluation..."
           python run_eval.py 2>&1
-          
+
       - name: Handle Failure
         if: failure()
         run: |
