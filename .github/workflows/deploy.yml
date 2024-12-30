@@ -1,0 +1,40 @@
+name: Deploy Tags
+on:
+  pull_request:
+    types:
+      - closed # Trigger when a pull request is closed
+
+jobs:
+  deploy:
+    if: ${{ github.event.pull_request.merged == true }} # Only run if the PR was merged
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Configure Git Committer
+        run: |
+          git config --global user.name "${{ github.event.pull_request.user.login }}"
+          git config --global user.email "${{ github.event.pull_request.user.email || 'github-actions[bot]@users.noreply.github.com' }}"
+
+      - name: Extract Version
+        id: extract_version
+        run: |
+          VERSION=$(cat version || echo "1.0.0")
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+
+      - name: Create and Push Tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$VERSION
+
+          # Delete the v1 tag if it exists locally and remotely
+          git tag -d v1 || true
+          git push origin :v1 || true
+
+          # Create new tags and push
+          git tag v1
+          git tag "v${VERSION}" -m "Version ${VERSION}"
+          git push origin --tags
