@@ -4,6 +4,10 @@ on:
     types:
       - closed # Trigger when a pull request is closed
 
+permissions:
+  contents: write
+  pull-requests: read
+
 jobs:
   deploy:
     if: ${{ github.event.pull_request.merged == true }} # Only run if the PR was merged
@@ -16,7 +20,7 @@ jobs:
       - name: Configure Git Committer
         run: |
           git config --global user.name "${{ github.event.pull_request.user.login }}"
-          git config --global user.email "${{ github.event.pull_request.user.email || 'github-actions[bot]@users.noreply.github.com' }}"
+          git config --global user.email "${{ github.event.pull_request.user.email || 'liana@coval.dev' }}"
 
       - name: Extract Version
         id: extract_version
