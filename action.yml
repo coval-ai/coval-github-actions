@@ -1,0 +1,41 @@
+name: Coval
+description: Ship reliable AI Agents faster
+author: coval
+
+branding:
+  icon: "triangle"
+  color: "black"
+
+inputs:
+  organization_id:
+    description: "Your organization ID."
+    required: true
+  dataset_id:
+    description: "The dataset ID to evaluate."
+    required: true
+  created_by:
+    description: "Identifier for who triggered the workflow."
+    required: false
+  test_set_name:
+    description: "Name of the Test Set to evaluate."
+    required: true
+  config:
+    description: "Configuration JSON as a string."
+    required: true
+outputs:
+  result:
+    description: "Result of the Coval evaluation."
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Run Coval Evaluation"
+      uses: coval-ai/coval-github-actions/.github/workflows/run_eval.yml@main
+      with:
+        organization_id: ${{ inputs.organization_id }}
+        dataset_id: ${{ inputs.dataset_id }}
+        created_by: ${{ inputs.created_by }}
+        test_set_name: ${{ inputs.test_set_name }}
+        config: ${{ inputs.config }}
+      env:
+        COVAL_API_KEY: ${{ secrets.COVAL_API_KEY }}
