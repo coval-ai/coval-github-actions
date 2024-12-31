@@ -17,9 +17,6 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/coval-ai/coval-github-actions/actions/workflows/release.yml">
-    <img src="https://github.com/coval-ai/coval-github-actions/actions/workflows/release.yml/badge.svg" alt="Release" />
-  </a>
   <a href="https://github.com/coval-ai/coval-github-actions/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/coval-ai/coval-github-actions" alt="License" />
   </a>
