@@ -30,11 +30,14 @@ class RunEval:
         self.created_by = os.getenv("CREATED_BY", "Github Action")
         self.run_status_url = 'https://api.coval.dev/eval/run'
         
-    def get_run_status_api(self, run_id):
+    def get_run_status_api(self, run_id, get_metrics=False):
         """
         This function gets the status of the run from the API.
         """
         config = {"run_id": run_id}
+        if (get_metrics):
+            config["type"] = "metrics"
+
         headers = {
             "Content-Type": "application/json",
             "x-api-key": self.api_key,
@@ -52,7 +55,7 @@ class RunEval:
                 print(f"Error Response Headers: {json.dumps(dict(e.response.headers), indent=2)}")
                 print(f"Error Response Body: {e.response.text}")
             return None
-
+        
     def _wait_for_run_to_complete(self, run_id, max_wait_time=600, check_interval=60):
         """
         This function waits for the run to complete by periodically checking its status.
@@ -103,6 +106,9 @@ class RunEval:
 
             # Wait for the job to finish
             self._wait_for_run_to_complete(run_id)
+            final_run_result = self.get_run_status_api(run_id, get_metrics=True)
+            averages = final_run_result.get('averages')
+            return averages
 
         except requests.exceptions.RequestException as e:
             print(f"Request Exception: {str(e)}")
