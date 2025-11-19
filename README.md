@@ -10,6 +10,16 @@
 
 <br />
 
+## :warning: Deprecated
+
+**This repository has been deprecated and is no longer maintained.**
+
+Please use the new repository: **[coval-ai/coval-github-action](https://github.com/coval-ai/coval-github-action)**
+
+---
+
+<br />
+
 <p align="center">
   <a href="https://www.coval.dev">Website</a> •
   <a href="https://docs.coval.dev">Docs</a> •
